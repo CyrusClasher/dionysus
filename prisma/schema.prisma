@@ -2,19 +2,167 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+    provider   = "postgresql"
+    url        = env("DATABASE_URL")
+    extensions = [vector]
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
+// model Post {
+//     id        Int      @id @default(autoincrement())
+//     name      String
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@index([name])
+// }
+model User {
+    id        String   @id @default(cuid())
+    // name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@index([name])
+    imageUrl  String?
+    firstName String?
+    lastName  String?
+
+    emailAddress String @unique
+
+    credits Int @default(150)
+
+    userToProjects    UserToProject[]
+    // @@index([name])
+    questionAsked     Question[]
+    stripeTransaction StripeTransaction[]
+}
+
+model Project {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name      String
+    githubUrl String
+
+    deletedAt DateTime?
+
+    userToProjects      UserToProject[]
+    commits             Commit[]
+    SourceCodeEmbedding SourceCodeEmbedding[]
+    savedQuestion       Question[]
+    meeting             Meeting[]
+}
+
+model UserToProject {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId    String
+    projectId String
+
+    user    User    @relation(fields: [userId], references: [id])
+    project Project @relation(fields: [projectId], references: [id])
+
+    @@unique([userId, projectId])
+}
+
+model SourceCodeEmbedding {
+    id String @id @default(cuid())
+
+    summaryEmbedding Unsupported("vector(768)")? //Since our gemini model provides with 768 dimension
+    sourceCode       String
+    fileName         String
+    summary          String
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+}
+
+model Meeting {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+
+    meetingUrl String //firebase storage URL
+
+    projectId String
+    project   Project       @relation(fields: [projectId], references: [id])
+    status    MeetingStatus @default(PROCESSING)
+    issues    Issue[]
+}
+
+model Issue {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    start    String
+    end      String
+    gist     String
+    headline String
+    summary  String
+
+    meetingId String
+    meeting   Meeting @relation(fields: [meetingId], references: [id])
+}
+
+model StripeTransaction {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId  String
+    user    User   @relation(fields: [userId], references: [id])
+    credits Int
+}
+
+enum MeetingStatus {
+    PROCESSING
+    COMPLETED
+}
+
+model Question {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    question String
+    answer   String
+
+    filesReferences Json?
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+}
+
+model Commit {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    projectId String
+    // userId    String
+    // message   String
+    // sha       String
+    // url       String
+
+    project            Project  @relation(fields: [projectId], references: [id])
+    // user    User    @relation(fields: [userId], references: [id])
+    commitMessage      String
+    commitHash         String
+    commitAuthorName   String
+    commitAuthorAvatar String
+    commitDate         DateTime
+    //ai summary
+    summary            String
 }
