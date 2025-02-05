@@ -114,7 +114,7 @@ const model = genAI.getGenerativeModel({
 // Create a rate limiter that allows 5 requests per minute
 const limiter = new Bottleneck({
   maxConcurrent: 1, // Only one request at a time
-  minTime: 5000, // 12 seconds per request (12 per minute)
+  minTime: 1000, // 12 seconds per request (60 per minute)
 });
 
 export const aiSummariseCommit = async (diff: string) => {
