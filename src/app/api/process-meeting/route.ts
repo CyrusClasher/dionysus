@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-export const maxDuration = 300; //5 minutes
+export const maxDuration = 60; //1 minutes
 
 const bodyParser = z.object({
   meetingUrl: z.string(),
