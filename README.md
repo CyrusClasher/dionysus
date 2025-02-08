@@ -1,29 +1,62 @@
-# Create T3 App
+# Dionysus
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Dionysus is a powerful SaaS application that enables users to index and analyze all files present in a GitHub repository using AI. It provides detailed insights, commit summaries, and AI-driven responses to repository-related queries. Additionally, users can upload meeting recordings to extract key insights, all while leveraging Stripe for credit-based access to its features.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+### 🔍 GitHub Repository Indexing & Analysis
+- Index all files in a GitHub repository using the GitHub API.
+- AI-powered file analysis using GeminiAPI.
+- Retrieve summaries of all commits made to the repository.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+### 🛠 Custom Hooks for Enhanced Functionality
+- **`useProject`**: Manages and provides project-related data within a React component, leveraging React hooks and local storage.
+- **`useRefetch`**: Dynamically refetches active queries using React Query's `useQueryClient` to update the UI without needing a page refresh.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### 💡 AI-Powered Repository Q&A
+- Users can ask questions about the repository.
+- Queries are transformed into vector embeddings.
+- The system retrieves the top 10 most relevant files based on the question vector.
+- AI provides responses along with files that need modifications.
+- Users can save AI-generated answers for later reference.
 
-## Learn More
+### 📂 Meeting Analysis & AI Insights
+- Users can upload meeting recordings via Google Firebase Storage.
+- AI processes the recordings using Assembly AI to generate summaries, extract key points, and identify potential issues.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### 💳 Stripe-Integrated Credit System
+- Users can purchase credits (50 credits = $1) via Stripe.
+- Each GitHub file indexing operation consumes 1 credit.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## Tech Stack
+- **Frontend**: Next.js, React
+- **Authentication**: Clerk
+- **Database**: PostgreSQL (via Prisma)
+- **Storage**: Firebase
+- **AI Integration**: GeminiAPI, Assembly AI
+- **Payments**: Stripe
+- **Backend & API Handling**: Next.js API routes
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Real-World Application
+Dionysus can be highly beneficial in a **tech development environment**, particularly for **engineering teams managing large codebases**. It streamlines code review, facilitates AI-driven repository exploration, and helps developers quickly understand project changes without manually sifting through commit histories. Additionally, it can assist project managers in deriving **actionable insights from meeting discussions**, improving collaboration and decision-making.
 
-## How do I deploy this?
+## Environment Variables
+To run this project, configure the following environment variables:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```env
+DATABASE_URL=""
+DB_URL="postgresql://neondb_owner:.ap-southeast-1.aws.neon.tech/dionysus?sslmode=require"
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=""
+CLERK_SECRET_KEY=""
+NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL='/sync-user'
+GITHUB_TOKEN=""
+GEMINI_API_KEY=""
+ASSEMBLYAI_API_KEY=""
+STRIPE_SECRET_KEY=""
+STRIPE_PUBLISHABLE_KEY=""
+STRIPE_WEBHOOK_SECRET=""
+NEXT_PUBLIC_APP_URL='https://dionysus-drab.vercel.app/dashboard'
+```
