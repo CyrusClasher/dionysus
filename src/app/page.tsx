@@ -2,12 +2,28 @@
 // import { LatestPost } from "@/app/_components/post";
 // import { api, HydrateClient } from "@/trpc/server";
 import { Button } from "@/components/ui/button";
+import Hero from "./_components/Hero";
+import Features from "./_components/Features";
+import HowItWorks from "./_components/HowItWorks";
+import Pricing from "./_components/Pricing";
+import Testimonials from "./_components/Testimonials";
+import FAQ from "./_components/FAQ";
+import Footer from "./_components/Footer";
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
   // void api.post.getLatest.prefetch();
   return (
-    <Button>Go to Dashboard</Button>
+    // <Button onClick={() => window.location.href = '/dashboard'}>Go to Dashboard</Button>
+    <main className="min-h-screen bg-background text-foreground">
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <Pricing />
+      <Testimonials />
+      <FAQ />
+      <Footer />
+    </main>
     // <HydrateClient>
     //   <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
     //     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
